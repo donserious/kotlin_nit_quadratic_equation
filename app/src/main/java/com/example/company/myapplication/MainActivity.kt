@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
     }
-    
+
     fun setABC () {
         aValue.addTextChangedListener(object: TextWatcher {
             override fun afterTextChanged(p0: Editable?) {}
