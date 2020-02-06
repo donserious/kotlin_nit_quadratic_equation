@@ -20,6 +20,8 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    //teseter
+
     fun setABC () {
         aValue.addTextChangedListener(object: TextWatcher {
             override fun afterTextChanged(p0: Editable?) {}
@@ -31,10 +33,7 @@ class MainActivity : AppCompatActivity() {
                     isSolutionExist.text = "Error"
                     return
                 }
-
-
             }
-
         })
     }
 }
