@@ -7,6 +7,7 @@ import android.text.TextWatcher
 import android.widget.EditText
 import kotlinx.android.synthetic.main.activity_main.*
 import org.w3c.dom.Text
+import java.lang.Exception
 import java.lang.Math.sqrt
 import java.lang.NumberFormatException
 import kotlin.math.sqrt
@@ -22,6 +23,9 @@ class MainActivity : AppCompatActivity() {
     private var c: Float = 0.0F
     private var checkRoot1: Boolean = false
     private var checkRoot2: Boolean = false
+    private var vpered: Boolean = true
+    private var nazad: Boolean = true
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,79 +34,76 @@ class MainActivity : AppCompatActivity() {
         setABC()
     }
 
+
+    private fun checkErrorX (x:String):Boolean {
+        try {
+            if (x != "") x.toFloat() else return false
+            return true
+        } catch (E:NumberFormatException){
+            return false
+        }
+    }
+
     private fun setABC () {
 
-        x1Value.addTextChangedListener(object: TextWatcher{
+        x1Value.addTextChangedListener(object: TextWatcher {
             override fun afterTextChanged(p0: Editable?) {}
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                if (p0.toString() != "") {
-                    checkRoot1 = true
-                    aValue.setText("1.0")
-                    isSolutionExist.text = "One root"
-                    if (checkRoot1 && checkRoot2) {
-                        isSolutionExist.text = "Two roots"
-
-                        if (x1Value.text.toString().toFloat()==x2Value.text.toString().toFloat()){
-                            isSolutionExist.text = "One root"
-                        }
-                    }
-                } else {
-                    if (!checkRoot2){
-                        isSolutionExist.text = ""
-                    } else {
+                if (nazad) {
+                    vpered = false
+                    if (checkErrorX(p0.toString()) || checkErrorX(x2Value.text.toString())) {
                         isSolutionExist.text = "One root"
+                        if (checkErrorX(p0.toString()) && !checkErrorX(x2Value.text.toString())) {
+                            bValue.setText("${(x1Value.text.toString().toFloat()+x1Value.text.toString().toFloat())*(-1)}")
+                            cValue.setText("${(x1Value.text.toString().toFloat()*x1Value.text.toString().toFloat())}")
+                        } else {
+                            isSolutionExist.text = "Two roots"
+                            bValue.setText("${(x1Value.text.toString().toFloat()+x2Value.text.toString().toFloat())*(-1)}")
+                            cValue.setText("${(x1Value.text.toString().toFloat()*x2Value.text.toString().toFloat())}")
+                        }
+                        aValue.setText("1.0")
+                    } else {
+                        isSolutionExist.text = "Error"
                     }
-                    checkRoot1 = false
+                    vpered = true
                 }
-
             }
-
         })
 
         x2Value.addTextChangedListener(object: TextWatcher{
             override fun afterTextChanged(p0: Editable?) {}
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                if (p0.toString() != "") {
-                    checkRoot2 = true
-                    aValue.setText("1.0")
-                    isSolutionExist.text = "One root"
-                    if (checkRoot1 && checkRoot2) {
-
-                        isSolutionExist.text = "Two roots"
-                        if (x1Value.text.toString().toFloat()==x2Value.text.toString().toFloat()){
-                            isSolutionExist.text = "One root"
-                        }
-                    }
-                } else {
-                    if (!checkRoot1){
-                        isSolutionExist.text = ""
-                    } else {
+                if (nazad) {
+                    vpered = false
+                    if (checkErrorX(p0.toString()) || checkErrorX(x1Value.text.toString())) {
                         isSolutionExist.text = "One root"
+                        if (checkErrorX(p0.toString()) && !checkErrorX(x1Value.text.toString())) {
+                            bValue.setText("${(x2Value.text.toString().toFloat()+x2Value.text.toString().toFloat())*(-1)}")
+                            cValue.setText("${(x2Value.text.toString().toFloat()*x2Value.text.toString().toFloat())}")
+                        } else {
+                            if (checkErrorX(p0.toString())) {
+                                isSolutionExist.text = "Two roots"
+                                bValue.setText("${(x1Value.text.toString().toFloat()+x2Value.text.toString().toFloat())*(-1)}")
+                                cValue.setText("${(x1Value.text.toString().toFloat()*x2Value.text.toString().toFloat())}")
+                            } else {
+                                isSolutionExist.text = "Error"
+                            }
+                        }
+                        aValue.setText("1.0")
+                    } else {
+                        isSolutionExist.text = "Error"
                     }
-                    checkRoot2 = false
+                    vpered = true
                 }
             }
-
         })
 
         aValue.addTextChangedListener(object: TextWatcher {
             override fun afterTextChanged(p0: Editable?) {}
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                a1 = false
-                try {
-                    p0.toString().toFloat()
-                } catch (E:NumberFormatException) {
-                    isSolutionExist.text = "Error"
-                    return
-                }  finally {
-                    tryDecide()
-                }
-                a = p0.toString().toFloat()
-                a1 = true
-                tryDecide()
 
             }
         })
@@ -112,18 +113,6 @@ class MainActivity : AppCompatActivity() {
             override fun afterTextChanged(p0: Editable?) {}
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                b1 = false
-                try {
-                    p0.toString().toFloat()
-                } catch (E:NumberFormatException) {
-                    isSolutionExist.text = "Error"
-                    return
-                } finally {
-                    tryDecide()
-                }
-                b = p0.toString().toFloat()
-                b1 = true
-                tryDecide()
 
             }
         })
@@ -132,18 +121,6 @@ class MainActivity : AppCompatActivity() {
             override fun afterTextChanged(p0: Editable?) {}
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                c1 = false
-                try {
-                    p0.toString().toFloat()
-                } catch (E:NumberFormatException) {
-                    isSolutionExist.text = "Error"
-                    return
-                } finally {
-                    tryDecide()
-                }
-                c = p0.toString().toFloat()
-                c1 = true
-                tryDecide()
 
             }
         })
